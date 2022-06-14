@@ -387,7 +387,7 @@ var cnItems = {
     "Lets you see memories, remember images, and even see new pictures and ideas.": "让您看到回忆、记住图像，甚至看到新的图片和想法。",
     "Library": "图书馆",
     "Life Essence": "生命精华",
-    "M": "米",
+    "M": "M",
     "Magic Skills speed": "魔法技能速度",
     "Master Wizard": "巫师大师",
     "Mastery is achieved when \"telling time\" becomes \"telling time what to do\".": "当“告诉时间”变成“告诉时间该做什么”时，就达到了精通。",
