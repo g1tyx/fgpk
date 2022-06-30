@@ -6,8 +6,9 @@
         </div>
         <div class="col-auto">
             <span class="text-shadow" :class="{ 'text-light':req.level > task.level, 'text-success':req.level <= task.level }">{{ $t('name_' + task.id) }}</span>
-            <small class="text-muted text-shadow">{{ $t('req_level') }}</small>
-            <span class="text-shadow" :class="{ 'text-light':req.level > task.level, 'text-success':req.level <= task.level }"><FormatNumber :value="req.level" /></span>
+			<i18n path="req_level" tag="small" :class="{ 'text-light':req.level > task.level, 'text-success':req.level <= task.level }" class="text-muted text-shadow">
+				<span class="text-shadow" :class="{ 'text-light':req.level > task.level, 'text-success':req.level <= task.level }"><FormatNumber :value="req.level" /></span>
+			</i18n>
         </div>
     </div>
 </template>

@@ -1,4 +1,5 @@
 export default {
+	telemetry: false,
     
     // Disable server-side rendering
     ssr: false,
@@ -54,10 +55,11 @@ export default {
     i18n: {
         locales: [
             { code:'en', file:'en.js' },
+            { code:'cn', file:'cn.js' },
         ],
-        lazy: true,
+        // lazy: true,
         langDir: 'locales/',
-        defaultLocale: 'en',
+        defaultLocale: 'cn',
     },
 
     // Build Configuration

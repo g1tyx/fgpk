@@ -267,3 +267,11 @@ body { background-image:url('~@/assets/ui/background.png'); background-size:cove
     background-image:url('~@/assets/ui/checked.png'); background-color:transparent;
     border-color:transparent;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+input[type="number"]{
+    -moz-appearance: textfield;
+}

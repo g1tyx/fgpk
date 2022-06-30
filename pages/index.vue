@@ -5,7 +5,7 @@
             <div class="position-absolute" style="top:-55px; left:calc(50% - 25px);"><img src="~/assets/logo.png" width="50px" /></div>
             <div class="mt-2 container">
                 <div class="row justify-content-center">
-                    <div class="col-auto text-center"><span class="h3 fw-bold text-light text-shadow">FG Progress Knight</span></div>
+                    <div class="col-auto text-center"><span class="h3 fw-bold text-light text-shadow">{{ $t('screenLoading_name') }}</span></div>
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-auto"><span class="flicker text-light text-shadow">{{ $t('screenLoading_text') }}</span></div>
@@ -28,10 +28,12 @@
                             <div class="progress bg-transparent position-absolute" style="top:6px; left:5px; right:9px; height:19px;">
                                 <div class="progress-bar bg-transparent bg-progress-red" role="progressbar" :style="'width:' + daysProgress + '%'" :aria-valuenow="daysProgress" aria-valuemin="0" aria-valuemax="100"></div>
                                 <div class="position-absolute w-100 small" style="top:2px; left:10px;">
-                                    <span class="fw-bold text-light opacity-75">{{ $t('left_age') }}</span>
-                                    <span class="fw-bold text-light opacity-75"><FormatNumber :value="years" /></span>
-                                    <span class="fw-bold text-light opacity-75">{{ $t('left_days') }}</span>
-                                    <span class="fw-bold text-light opacity-75">{{ Math.floor(days - years * 365) }}</span>
+									<i18n path="left_age" tag="span" class="fw-bold text-light opacity-75">
+                                    	<span class="fw-bold text-light opacity-75"><FormatNumber :value="years" /></span>
+									</i18n>
+									<i18n path="left_days" tag="span" class="fw-bold text-light opacity-75">
+                                   		<span class="fw-bold text-light opacity-75">{{ Math.floor(days - years * 365) }}</span>
+									</i18n>
                                 </div>
                             </div>
                             <div class="position-absolute" style="top:0px; left:0px; right:0px; bottom:0px;">
@@ -211,6 +213,28 @@
                     <div v-if="years >= 20 || rebirthOneCount >= 1" class="container">
                         <div class="row align-items-baseline">
                             <div class="col">
+                                <span class="h5 text-light text-shadow">{{ $t('left_currentJobCat') }}</span>
+                            </div>
+                            <div class="col-auto small">
+                                <span class="ms-3 text-white text-shadow">{{ $t('name_' + currentJob.cat) }}</span>
+                            </div>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-auto pe-0">
+                                <button type="button" class="btn p-0 border-0" @click="toggleAutoJobCat()">
+                                    <img v-if="autoJobCatEnabled == false" src="~/assets/ui/toggleOff.png" width="16px" />
+                                    <img v-if="autoJobCatEnabled == true" src="~/assets/ui/toggleOn.png" width="16px" />
+                                </button>
+                            </div>
+                            <div class="col small">
+                                <span class="text-muted text-shadow">{{ $t('left_autoJobCat') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-if="years >= 20 || rebirthOneCount >= 1" class="container">
+                        <div class="row align-items-baseline">
+                            <div class="col">
                                 <span class="h5 text-light text-shadow">{{ $t('left_currentSkill') }}</span>
                             </div>
                             <div class="col-auto small">
@@ -230,6 +254,20 @@
                             <div class="col-auto small">
                                 <span class="text-muted text-shadow">{{ $t('left_lvl') }}</span>
                                 <span class="text-muted text-shadow"><FormatNumber :value="currentSkill.level" /></span>
+                            </div>
+                        </div>
+                    </div>
+
+					<div v-if="years >= 20 || rebirthOneCount >= 1" class="container">
+                        <div class="row align-items-center">
+                            <div class="col-auto pe-0">
+                                <button type="button" class="btn p-0 border-0" @click="toggleAutoShop()">
+                                    <img v-if="autoShopEnabled == false" src="~/assets/ui/toggleOff.png" width="16px" />
+                                    <img v-if="autoShopEnabled == true" src="~/assets/ui/toggleOn.png" width="16px" />
+                                </button>
+                            </div>
+                            <div class="col small">
+                                <span class="text-muted text-shadow">{{ $t('left_autoShop') }}</span>
                             </div>
                         </div>
                     </div>
@@ -256,7 +294,7 @@
                             </div>
                             <div class="col-auto d-flex align-items-center justify-content-end">
                                 <input type="number" class="form-control form-control-sm text-end" v-model="pauseDelay" style="width:90px;" />
-                                <small class="text-muted ms-1">{{ $t('left_age') }}</small>
+                                <small class="text-muted ms-1">{{ $t('left_age', [""]) }}</small>
                             </div>
                         </div>
                     </div>
@@ -334,32 +372,32 @@
                     <div class="row gx-3 justify-content-center">
                         <div class="col-auto text-center" style="width:125px;">
                             <button type="button" class="btn p-0 border-0 grow" :class="{ 'active':currentPage == 'jobs' }" @click="setCurrentPage('jobs')">
-                                <img src="~/assets/ui/jobs.png" width="100px" :class="{ 'd-none':currentPage == 'jobs' }" />
-                                <img src="~/assets/ui/jobsOutline.png" width="111px" :class="{ 'd-none':currentPage != 'jobs' }" />
+                                <img :src="require('~/assets/ui_'+language+'/jobs.png')" width="100px" :class="{ 'd-none':currentPage == 'jobs' }" />
+                                <img :src="require('~/assets/ui_'+language+'/jobsOutline.png')" width="111px" :class="{ 'd-none':currentPage != 'jobs' }" />
                             </button>
                         </div>
                         <div class="col-auto text-center" style="width:125px;">
                             <button type="button" class="btn p-0 border-0 grow" :class="{ 'active':currentPage == 'skills' }" @click="setCurrentPage('skills')">
-                                <img src="~/assets/ui/skills.png" width="100px" :class="{ 'd-none':currentPage == 'skills' }" />
-                                <img src="~/assets/ui/skillsOutline.png" width="111px" :class="{ 'd-none':currentPage != 'skills' }" />
+                                <img :src="require('~/assets/ui_'+language+'/skills.png')" width="100px" :class="{ 'd-none':currentPage == 'skills' }" />
+                                <img :src="require('~/assets/ui_'+language+'/skillsOutline.png')" width="111px" :class="{ 'd-none':currentPage != 'skills' }" />
                             </button>
                         </div>
                         <div class="col-auto text-center" style="width:125px;">
                             <button type="button" class="btn p-0 border-0 grow" :class="{ 'active':currentPage == 'shop' }" @click="setCurrentPage('shop')">
-                                <img src="~/assets/ui/shop.png" width="100px" :class="{ 'd-none':currentPage == 'shop' }" />
-                                <img src="~/assets/ui/shopOutline.png" width="111px" :class="{ 'd-none':currentPage != 'shop' }" />
+                                <img :src="require('~/assets/ui_'+language+'/shop.png')" width="100px" :class="{ 'd-none':currentPage == 'shop' }" />
+                                <img :src="require('~/assets/ui_'+language+'/shopOutline.png')" width="111px" :class="{ 'd-none':currentPage != 'shop' }" />
                             </button>
                         </div>
-                        <div v-if="years > 25" class="col-auto text-center" style="width:125px;">
+                        <div v-if="years >= 25" class="col-auto text-center" style="width:125px;">
                             <button type="button" class="btn p-0 border-0 grow" :class="{ 'active':currentPage == 'rebirth' }" @click="setCurrentPage('rebirth')">
-                                <img src="~/assets/ui/rebirth.png" width="100px" :class="{ 'd-none':currentPage == 'rebirth' }" />
-                                <img src="~/assets/ui/rebirthOutline.png" width="111px" :class="{ 'd-none':currentPage != 'rebirth' }" />
+                                <img :src="require('~/assets/ui_'+language+'/rebirth.png')" width="100px" :class="{ 'd-none':currentPage == 'rebirth' }" />
+                                <img :src="require('~/assets/ui_'+language+'/rebirthOutline.png')" width="111px" :class="{ 'd-none':currentPage != 'rebirth' }" />
                             </button>
                         </div>
-                        <div v-if="years > 10000" class="col-auto text-center" style="width:125px;">
+                        <div v-if="years >= 10000" class="col-auto text-center" style="width:125px;">
                             <button type="button" class="btn p-0 border-0 grow" :class="{ 'active':currentPage == 'cosmos' }" @click="setCurrentPage('cosmos')">
-                                <img src="~/assets/ui/cosmos.png" width="100px" :class="{ 'd-none':currentPage == 'cosmos' }" />
-                                <img src="~/assets/ui/cosmosOutline.png" width="111px" :class="{ 'd-none':currentPage != 'cosmos' }" />
+                                <img :src="require('~/assets/ui_'+language+'/cosmos.png')" width="100px" :class="{ 'd-none':currentPage == 'cosmos' }" />
+                                <img :src="require('~/assets/ui_'+language+'/cosmosOutline.png')" width="111px" :class="{ 'd-none':currentPage != 'cosmos' }" />
                             </button>
                         </div>
                     </div>
@@ -487,47 +525,47 @@
                             <JobUnlocked v-if="getJob('student').unlocked == true" bg="listbg8" :job="getJob('student')" :gain="getTaskGain(getJob('student'))" :isActive="isJobActive('student')" @activate="setCurrentJob('student')" />
                             
                             <TaskLocked v-if="getJob('apprenticeMage').visible == true && getJob('apprenticeMage').unlocked == false" :task="getJob('apprenticeMage')">
-                                <Requirement :req="getJob('apprenticeMage').reqs[0]" :task="getJob('student')" />
-                                <Requirement :req="getJob('apprenticeMage').reqs[1]" :task="getSkill('manaControl')" />
+                                <Requirement :req="getJob('apprenticeMage').reqs[0]" :task="getSkill('manaControl')" />
+                                <Requirement :req="getJob('apprenticeMage').reqs[1]" :task="getJob('student')" />
                             </TaskLocked>
                             <JobUnlocked v-if="getJob('apprenticeMage').unlocked == true" bg="listbg8" :job="getJob('apprenticeMage')" :gain="getTaskGain(getJob('apprenticeMage'))" :isActive="isJobActive('apprenticeMage')" @activate="setCurrentJob('apprenticeMage')" />
                             
                             <TaskLocked v-if="getJob('adeptMage').visible == true && getJob('adeptMage').unlocked == false" :task="getJob('adeptMage')">
-                                <Requirement :req="getJob('adeptMage').reqs[0]" :task="getJob('apprenticeMage')" />
-                                <Requirement :req="getJob('adeptMage').reqs[1]" :task="getSkill('manaControl')" />
+                                <Requirement :req="getJob('adeptMage').reqs[0]" :task="getSkill('manaControl')" />
+                                <Requirement :req="getJob('adeptMage').reqs[1]" :task="getJob('apprenticeMage')" />
                             </TaskLocked>
                             <JobUnlocked v-if="getJob('adeptMage').unlocked == true" bg="listbg8" :job="getJob('adeptMage')" :gain="getTaskGain(getJob('adeptMage'))" :isActive="isJobActive('adeptMage')" @activate="setCurrentJob('adeptMage')" />
                             
                             <TaskLocked v-if="getJob('masterWizard').visible == true && getJob('masterWizard').unlocked == false" :task="getJob('masterWizard')">
-                                <Requirement :req="getJob('masterWizard').reqs[0]" :task="getJob('adeptMage')" />
-                                <Requirement :req="getJob('masterWizard').reqs[1]" :task="getSkill('manaControl')" />
+                                <Requirement :req="getJob('masterWizard').reqs[0]" :task="getSkill('manaControl')" />
+                                <Requirement :req="getJob('masterWizard').reqs[1]" :task="getJob('adeptMage')" />
                             </TaskLocked>
                             <JobUnlocked v-if="getJob('masterWizard').unlocked == true" bg="listbg8" :job="getJob('masterWizard')" :gain="getTaskGain(getJob('masterWizard'))" :isActive="isJobActive('masterWizard')" @activate="setCurrentJob('masterWizard')" />
                             
                             <TaskLocked v-if="getJob('archmage').visible == true && getJob('archmage').unlocked == false" :task="getJob('archmage')">
-                                <Requirement :req="getJob('archmage').reqs[0]" :task="getJob('masterWizard')" />
-                                <Requirement :req="getJob('archmage').reqs[1]" :task="getSkill('manaControl')" />
+                                <Requirement :req="getJob('archmage').reqs[0]" :task="getSkill('manaControl')" />
+                                <Requirement :req="getJob('archmage').reqs[1]" :task="getJob('masterWizard')" />
                             </TaskLocked>
                             <JobUnlocked v-if="getJob('archmage').unlocked == true" bg="listbg8" :job="getJob('archmage')" :gain="getTaskGain(getJob('archmage'))" :isActive="isJobActive('archmage')" @activate="setCurrentJob('archmage')" />
                             
                             <TaskLocked v-if="getJob('chronomancer').visible == true && getJob('chronomancer').unlocked == false" :task="getJob('chronomancer')">
-                                <Requirement :req="getJob('chronomancer').reqs[0]" :task="getJob('archmage')" />
+                                <Requirement :req="getJob('chronomancer').reqs[0]" :task="getSkill('manaControl')" />
                                 <Requirement :req="getJob('chronomancer').reqs[1]" :task="getSkill('meditation')" />
-                                <Requirement :req="getJob('chronomancer').reqs[2]" :task="getSkill('manaControl')" />
+                                <Requirement :req="getJob('chronomancer').reqs[2]" :task="getJob('archmage')" />
                             </TaskLocked>
                             <JobUnlocked v-if="getJob('chronomancer').unlocked == true" bg="listbg8" :job="getJob('chronomancer')" :gain="getTaskGain(getJob('chronomancer'))" :isActive="isJobActive('chronomancer')" @activate="setCurrentJob('chronomancer')" />
                             
                             <TaskLocked v-if="getJob('chairman').visible == true && getJob('chairman').unlocked == false" :task="getJob('chairman')">
-                                <Requirement :req="getJob('chairman').reqs[0]" :task="getJob('chronomancer')" />
+                                <Requirement :req="getJob('chairman').reqs[0]" :task="getSkill('manaControl')" />
                                 <Requirement :req="getJob('chairman').reqs[1]" :task="getSkill('productivity')" />
-                                <Requirement :req="getJob('chairman').reqs[2]" :task="getSkill('manaControl')" />
+                                <Requirement :req="getJob('chairman').reqs[2]" :task="getJob('chronomancer')" />
                             </TaskLocked>
                             <JobUnlocked v-if="getJob('chairman').unlocked == true" bg="listbg8" :job="getJob('chairman')" :gain="getTaskGain(getJob('chairman'))" :isActive="isJobActive('chairman')" @activate="setCurrentJob('chairman')" />
                             
                             <TaskLocked v-if="getJob('imperator').visible == true && getJob('imperator').unlocked == false" :task="getJob('imperator')">
-                                <Requirement :req="getJob('imperator').reqs[0]" :task="getJob('chairman')" />
+                                <Requirement :req="getJob('imperator').reqs[0]" :task="getSkill('allSeeingEye')" />
                                 <Requirement :req="getJob('imperator').reqs[1]" :task="getSkill('concentration')" />
-                                <Requirement :req="getJob('imperator').reqs[2]" :task="getSkill('allSeeingEye')" />
+                                <Requirement :req="getJob('imperator').reqs[2]" :task="getJob('chairman')" />
                             </TaskLocked>
                             <JobUnlocked v-if="getJob('imperator').unlocked == true" bg="listbg8" :job="getJob('imperator')" :gain="getTaskGain(getJob('imperator'))" :isActive="isJobActive('imperator')" @activate="setCurrentJob('imperator')" />
                             
@@ -543,38 +581,38 @@
                             <JobUnlocked v-if="getJob('voidSlave').unlocked == true" bg="listbg3" :job="getJob('voidSlave')" :gain="getTaskGain(getJob('voidSlave'))" :isActive="isJobActive('voidSlave')" @activate="setCurrentJob('voidSlave')" />
 
                             <TaskLocked v-if="getJob('voidFiend').visible == true && getJob('voidFiend').unlocked == false" :task="getJob('voidFiend')">
-                                <Requirement :req="getJob('voidFiend').reqs[0]" :task="getJob('voidSlave')" />
-                                <Requirement :req="getJob('voidFiend').reqs[1]" :task="getSkill('brainwashing')" />
+                                <Requirement :req="getJob('voidFiend').reqs[0]" :task="getSkill('brainwashing')" />
+                                <Requirement :req="getJob('voidFiend').reqs[1]" :task="getJob('voidSlave')" />
                             </TaskLocked>
                             <JobUnlocked v-if="getJob('voidFiend').unlocked == true" bg="listbg3" :job="getJob('voidFiend')" :gain="getTaskGain(getJob('voidFiend'))" :isActive="isJobActive('voidFiend')" @activate="setCurrentJob('voidFiend')" />
 
                             <TaskLocked v-if="getJob('abyssAnomaly').visible == true && getJob('abyssAnomaly').unlocked == false" :task="getJob('abyssAnomaly')">
-                                <Requirement :req="getJob('abyssAnomaly').reqs[0]" :task="getJob('voidFiend')" />
-                                <Requirement :req="getJob('abyssAnomaly').reqs[1]" :task="getSkill('mindSeize')" />
+                                <Requirement :req="getJob('abyssAnomaly').reqs[0]" :task="getSkill('mindSeize')" />
+                                <Requirement :req="getJob('abyssAnomaly').reqs[1]" :task="getJob('voidFiend')" />
                             </TaskLocked>
                             <JobUnlocked v-if="getJob('abyssAnomaly').unlocked == true" bg="listbg3" :job="getJob('abyssAnomaly')" :gain="getTaskGain(getJob('abyssAnomaly'))" :isActive="isJobActive('abyssAnomaly')" @activate="setCurrentJob('abyssAnomaly')" />
 
                             <TaskLocked v-if="getJob('voidWraith').visible == true && getJob('voidWraith').unlocked == false" :task="getJob('voidWraith')">
-                                <Requirement :req="getJob('voidWraith').reqs[0]" :task="getJob('abyssAnomaly')" />
-                                <Requirement :req="getJob('voidWraith').reqs[1]" :task="getSkill('temporalDimension')" />
+                                <Requirement :req="getJob('voidWraith').reqs[0]" :task="getSkill('temporalDimension')" />
+                                <Requirement :req="getJob('voidWraith').reqs[1]" :task="getJob('abyssAnomaly')" />
                             </TaskLocked>
                             <JobUnlocked v-if="getJob('voidWraith').unlocked == true" bg="listbg3" :job="getJob('voidWraith')" :gain="getTaskGain(getJob('voidWraith'))" :isActive="isJobActive('voidWraith')" @activate="setCurrentJob('voidWraith')" />
 
                             <TaskLocked v-if="getJob('voidReaver').visible == true && getJob('voidReaver').unlocked == false" :task="getJob('voidReaver')">
-                                <Requirement :req="getJob('voidReaver').reqs[0]" :task="getJob('voidWraith')" />
-                                <Requirement :req="getJob('voidReaver').reqs[1]" :task="getSkill('voidAmplification')" />
+                                <Requirement :req="getJob('voidReaver').reqs[0]" :task="getSkill('voidAmplification')" />
+                                <Requirement :req="getJob('voidReaver').reqs[1]" :task="getJob('voidWraith')" />
                             </TaskLocked>
                             <JobUnlocked v-if="getJob('voidReaver').unlocked == true" bg="listbg3" :job="getJob('voidReaver')" :gain="getTaskGain(getJob('voidReaver'))" :isActive="isJobActive('voidReaver')" @activate="setCurrentJob('voidReaver')" />
 
                             <TaskLocked v-if="getJob('voidLord').visible == true && getJob('voidLord').unlocked == false" :task="getJob('voidLord')">
-                                <Requirement :req="getJob('voidLord').reqs[0]" :task="getJob('voidReaver')" />
-                                <Requirement :req="getJob('voidLord').reqs[1]" :task="getSkill('voidSymbiosis')" />
+                                <Requirement :req="getJob('voidLord').reqs[0]" :task="getSkill('voidSymbiosis')" />
+                                <Requirement :req="getJob('voidLord').reqs[1]" :task="getJob('voidReaver')" />
                             </TaskLocked>
                             <JobUnlocked v-if="getJob('voidLord').unlocked == true" bg="listbg3" :job="getJob('voidLord')" :gain="getTaskGain(getJob('voidLord'))" :isActive="isJobActive('voidLord')" @activate="setCurrentJob('voidLord')" />
 
                             <TaskLocked v-if="getJob('abyssGod').visible == true && getJob('abyssGod').unlocked == false" :task="getJob('abyssGod')">
-                                <Requirement :req="getJob('abyssGod').reqs[0]" :task="getJob('voidLord')" />
-                                <Requirement :req="getJob('abyssGod').reqs[1]" :task="getSkill('voidEmbodiment')" />
+                                <Requirement :req="getJob('abyssGod').reqs[0]" :task="getSkill('voidEmbodiment')" />
+                                <Requirement :req="getJob('abyssGod').reqs[1]" :task="getJob('voidLord')" />
                             </TaskLocked>
                             <JobUnlocked v-if="getJob('abyssGod').unlocked == true" bg="listbg3" :job="getJob('abyssGod')" :gain="getTaskGain(getJob('abyssGod'))" :isActive="isJobActive('abyssGod')" @activate="setCurrentJob('abyssGod')" />
 
@@ -597,8 +635,8 @@
                             <JobUnlocked v-if="getJob('sigmaProioxis').unlocked == true" bg="listbg4" :job="getJob('sigmaProioxis')" :gain="getTaskGain(getJob('sigmaProioxis'))" :isActive="isJobActive('sigmaProioxis')" @activate="setCurrentJob('sigmaProioxis')" />
                             
                             <TaskLocked v-if="getJob('acallaris').visible == true && getJob('acallaris').unlocked == false" :task="getJob('acallaris')">
-                                <Requirement :req="getJob('acallaris').reqs[0]" :task="getJob('sigmaProioxis')" />
-                                <Requirement :req="getJob('acallaris').reqs[1]" :task="getSkill('galacticCommand')" />
+                                <Requirement :req="getJob('acallaris').reqs[0]" :task="getSkill('galacticCommand')" />
+                                <Requirement :req="getJob('acallaris').reqs[1]" :task="getJob('sigmaProioxis')" />
                             </TaskLocked>
                             <JobUnlocked v-if="getJob('acallaris').unlocked == true" bg="listbg4" :job="getJob('acallaris')" :gain="getTaskGain(getJob('acallaris'))" :isActive="isJobActive('acallaris')" @activate="setCurrentJob('acallaris')" />
                             
@@ -609,8 +647,8 @@
                             <JobUnlocked v-if="getJob('oneAboveAll').unlocked == true" bg="listbg4" :job="getJob('oneAboveAll')" :gain="getTaskGain(getJob('oneAboveAll'))" :isActive="isJobActive('oneAboveAll')" @activate="setCurrentJob('oneAboveAll')" />
                             
                             <TaskLocked v-if="getJob('oneBelowAll').visible == true && getJob('oneBelowAll').unlocked == false" :task="getJob('oneBelowAll')">
-                                <Requirement :req="getJob('oneBelowAll').reqs[0]" :task="getJob('evilIncarnate')" />
-                                <Requirement :req="getJob('oneBelowAll').reqs[1]" :task="getSkill('oneAboveAll')" />
+                                <Requirement :req="getJob('oneBelowAll').reqs[0]" :task="getSkill('evilIncarnate')" />
+                                <Requirement :req="getJob('oneBelowAll').reqs[1]" :task="getJob('oneAboveAll')" />
                                 <Requirement :req="getJob('oneBelowAll').reqs[2]" :task="getSkill('yinYang')" />
                             </TaskLocked>
                             <JobUnlocked v-if="getJob('oneBelowAll').unlocked == true" bg="listbg4" :job="getJob('oneBelowAll')" :gain="getTaskGain(getJob('oneBelowAll'))" :isActive="isJobActive('oneBelowAll')" @activate="setCurrentJob('oneBelowAll')" />
@@ -669,33 +707,33 @@
                             <SkillUnlocked v-if="getSkill('manaControl').unlocked == true" bg="listbg8" :skill="getSkill('manaControl')" :effectId="'arcaneSpeed'" :gain="getTaskGain(getSkill('manaControl'))" :isActive="isSkillActive('manaControl')" @activate="setCurrentSkill('manaControl')" />
 
                             <TaskLocked v-if="getSkill('lifeEssence').visible == true && getSkill('lifeEssence').unlocked == false" :task="getSkill('lifeEssence')">
-                                <Requirement :req="getSkill('lifeEssence').reqs[0]" :task="getSkill('apprenticeMage')" />
+                                <Requirement :req="getSkill('lifeEssence').reqs[0]" :task="getJob('apprenticeMage')" />
                             </TaskLocked>
                             <SkillUnlocked v-if="getSkill('lifeEssence').unlocked == true" bg="listbg8" :skill="getSkill('lifeEssence')" :effectId="'lifespan'" :gain="getTaskGain(getSkill('lifeEssence'))" :isActive="isSkillActive('lifeEssence')" @activate="setCurrentSkill('lifeEssence')" />
 
                             <TaskLocked v-if="getSkill('timeWarping').visible == true && getSkill('timeWarping').unlocked == false" :task="getSkill('timeWarping')">
-                                <Requirement :req="getSkill('timeWarping').reqs[0]" :task="getSkill('adeptMage')" />
+                                <Requirement :req="getSkill('timeWarping').reqs[0]" :task="getJob('adeptMage')" />
                             </TaskLocked>
                             <SkillUnlocked v-if="getSkill('timeWarping').unlocked == true" bg="listbg8" :skill="getSkill('timeWarping')" :effectId="'gameSpeed'" :gain="getTaskGain(getSkill('timeWarping'))" :isActive="isSkillActive('timeWarping')" @activate="setCurrentSkill('timeWarping')" />
                             
                             <TaskLocked v-if="getSkill('astralBody').visible == true && getSkill('astralBody').unlocked == false" :task="getSkill('astralBody')">
-                                <Requirement :req="getSkill('astralBody').reqs[0]" :task="getSkill('archmage')" />
+                                <Requirement :req="getSkill('astralBody').reqs[0]" :task="getJob('archmage')" />
                             </TaskLocked>
                             <SkillUnlocked v-if="getSkill('astralBody').unlocked == true" bg="listbg8" :skill="getSkill('astralBody')" :effectId="'lifespan'" :gain="getTaskGain(getSkill('astralBody'))" :isActive="isSkillActive('astralBody')" @activate="setCurrentSkill('astralBody')" />
                             
                             <TaskLocked v-if="getSkill('temporalDimension').visible == true && getSkill('temporalDimension').unlocked == false" :task="getSkill('temporalDimension')">
-                                <Requirement :req="getSkill('temporalDimension').reqs[0]" :task="getSkill('chronomancer')" />
+                                <Requirement :req="getSkill('temporalDimension').reqs[0]" :task="getJob('chronomancer')" />
                             </TaskLocked>
                             <SkillUnlocked v-if="getSkill('temporalDimension').unlocked == true" bg="listbg8" :skill="getSkill('temporalDimension')" :effectId="'gameSpeed'" :gain="getTaskGain(getSkill('temporalDimension'))" :isActive="isSkillActive('temporalDimension')" @activate="setCurrentSkill('temporalDimension')" />
                             
                             <TaskLocked v-if="getSkill('allSeeingEye').visible == true && getSkill('allSeeingEye').unlocked == false" :task="getSkill('allSeeingEye')">
                                 <Requirement :req="getSkill('allSeeingEye').reqs[0]" :task="getSkill('manaControl')" />
-                                <Requirement :req="getSkill('allSeeingEye').reqs[1]" :task="getSkill('chairman')" />
+                                <Requirement :req="getSkill('allSeeingEye').reqs[1]" :task="getJob('chairman')" />
                             </TaskLocked>
                             <SkillUnlocked v-if="getSkill('allSeeingEye').unlocked == true" bg="listbg8" :skill="getSkill('allSeeingEye')" :effectId="'arcaneExpense'" :gain="getTaskGain(getSkill('allSeeingEye'))" :isActive="isSkillActive('allSeeingEye')" @activate="setCurrentSkill('allSeeingEye')" />
                             
                             <TaskLocked v-if="getSkill('brainwashing').visible == true && getSkill('brainwashing').unlocked == false" :task="getSkill('brainwashing')">
-                                <Requirement :req="getSkill('brainwashing').reqs[0]" :task="getSkill('imperator')" />
+                                <Requirement :req="getSkill('brainwashing').reqs[0]" :task="getJob('imperator')" />
                             </TaskLocked>
                             <SkillUnlocked v-if="getSkill('brainwashing').unlocked == true" bg="listbg8" :skill="getSkill('brainwashing')" :effectId="'allExpenses'" :gain="getTaskGain(getSkill('brainwashing'))" :isActive="isSkillActive('brainwashing')" @activate="setCurrentSkill('brainwashing')" />	
                             
@@ -704,13 +742,13 @@
                         <Title v-if="getSkill('absoluteWish').visible == true" image="skillManipulation">
                             
                             <TaskLocked v-if="getSkill('absoluteWish').visible == true && getSkill('absoluteWish').unlocked == false" :task="getSkill('absoluteWish')">
-                                <Requirement :req="getSkill('absoluteWish').reqs[0]" :task="getSkill('voidSlave')" />
-                                <Requirement :req="getSkill('absoluteWish').reqs[1]" :task="getSkill('chairman')" />
+                                <Requirement :req="getSkill('absoluteWish').reqs[0]" :task="getJob('voidSlave')" />
+                                <Requirement :req="getSkill('absoluteWish').reqs[1]" :task="getJob('chairman')" />
                             </TaskLocked>
                             <SkillUnlocked v-if="getSkill('absoluteWish').unlocked == true" bg="listbg3" :skill="getSkill('absoluteWish')" :effectId="'evilGain'" :gain="getTaskGain(getSkill('absoluteWish'))" :isActive="isSkillActive('absoluteWish')" @activate="setCurrentSkill('absoluteWish')" />
                             
                             <TaskLocked v-if="getSkill('voidAmplification').visible == true && getSkill('voidAmplification').unlocked == false" :task="getSkill('voidAmplification')">
-                                <Requirement :req="getSkill('voidAmplification').reqs[0]" :task="getSkill('voidSlave')" />
+                                <Requirement :req="getSkill('voidAmplification').reqs[0]" :task="getJob('voidSlave')" />
                                 <Requirement :req="getSkill('voidAmplification').reqs[1]" :task="getSkill('absoluteWish')" />
                             </TaskLocked>
                             <SkillUnlocked v-if="getSkill('voidAmplification').unlocked == true" bg="listbg3" :skill="getSkill('voidAmplification')" :effectId="'voidSpeed'" :gain="getTaskGain(getSkill('voidAmplification'))" :isActive="isSkillActive('voidAmplification')" @activate="setCurrentSkill('voidAmplification')" />
@@ -722,24 +760,24 @@
                             
                             <TaskLocked v-if="getSkill('ceaselessAbyss').visible == true && getSkill('ceaselessAbyss').unlocked == false" :task="getSkill('ceaselessAbyss')">
                                 <Requirement :req="getSkill('ceaselessAbyss').reqs[0]" :task="getSkill('voidInfluence')" />
-                                <Requirement :req="getSkill('ceaselessAbyss').reqs[1]" :task="getSkill('abyssAnomaly')" />
+                                <Requirement :req="getSkill('ceaselessAbyss').reqs[1]" :task="getJob('abyssAnomaly')" />
                             </TaskLocked>
                             <SkillUnlocked v-if="getSkill('ceaselessAbyss').unlocked == true" bg="listbg3" :skill="getSkill('ceaselessAbyss')" :effectId="'lifespan'" :gain="getTaskGain(getSkill('ceaselessAbyss'))" :isActive="isSkillActive('ceaselessAbyss')" @activate="setCurrentSkill('ceaselessAbyss')" />
                             
                             <TaskLocked v-if="getSkill('voidSymbiosis').visible == true && getSkill('voidSymbiosis').unlocked == false" :task="getSkill('voidSymbiosis')">
                                 <Requirement :req="getSkill('voidSymbiosis').reqs[0]" :task="getSkill('ceaselessAbyss')" />
-                                <Requirement :req="getSkill('voidSymbiosis').reqs[1]" :task="getSkill('voidReaver')" />
+                                <Requirement :req="getSkill('voidSymbiosis').reqs[1]" :task="getJob('voidReaver')" />
                             </TaskLocked>
                             <SkillUnlocked v-if="getSkill('voidSymbiosis').unlocked == true" bg="listbg3" :skill="getSkill('voidSymbiosis')" :effectId="'jobSpeed'" :gain="getTaskGain(getSkill('voidSymbiosis'))" :isActive="isSkillActive('voidSymbiosis')" @activate="setCurrentSkill('voidSymbiosis')" />
                             
                             <TaskLocked v-if="getSkill('voidEmbodiment').visible == true && getSkill('voidEmbodiment').unlocked == false" :task="getSkill('voidEmbodiment')">
                                 <Requirement :req="getSkill('voidEmbodiment').reqs[0]" :task="getSkill('darkInfluence')" />
-                                <Requirement :req="getSkill('voidEmbodiment').reqs[1]" :task="getSkill('voidLord')" />
+                                <Requirement :req="getSkill('voidEmbodiment').reqs[1]" :task="getJob('voidLord')" />
                             </TaskLocked>
                             <SkillUnlocked v-if="getSkill('voidEmbodiment').unlocked == true" bg="listbg3" :skill="getSkill('voidEmbodiment')" :effectId="'evilGain'" :gain="getTaskGain(getSkill('voidEmbodiment'))" :isActive="isSkillActive('voidEmbodiment')" @activate="setCurrentSkill('voidEmbodiment')" />
                             
                             <TaskLocked v-if="getSkill('abyssManipulation').visible == true && getSkill('abyssManipulation').unlocked == false" :task="getSkill('abyssManipulation')">
-                                <Requirement :req="getSkill('abyssManipulation').reqs[0]" :task="getSkill('abyssGod')" />
+                                <Requirement :req="getSkill('abyssManipulation').reqs[0]" :task="getJob('abyssGod')" />
                                 <Requirement :req="getSkill('abyssManipulation').reqs[1]" :task="getSkill('darkInfluence')" />
                                 <Requirement :req="getSkill('abyssManipulation').reqs[2]" :task="getSkill('voidInfluence')" />
                             </TaskLocked>
@@ -750,19 +788,19 @@
                         <Title v-if="getSkill('cosmicLongevity').visible == true" image="skillPowers">
                             
                             <TaskLocked v-if="getSkill('cosmicLongevity').visible == true && getSkill('cosmicLongevity').unlocked == false" :task="getSkill('cosmicLongevity')">
-                                <Requirement :req="getSkill('cosmicLongevity').reqs[0]" :task="getSkill('eternalWanderer')" />
+                                <Requirement :req="getSkill('cosmicLongevity').reqs[0]" :task="getJob('eternalWanderer')" />
                             </TaskLocked>
                             <SkillUnlocked v-if="getSkill('cosmicLongevity').unlocked == true" bg="listbg4" :skill="getSkill('cosmicLongevity')" :effectId="'lifespan'" :gain="getTaskGain(getSkill('cosmicLongevity'))" :isActive="isSkillActive('cosmicLongevity')" @activate="setCurrentSkill('cosmicLongevity')" />
 
                             <TaskLocked v-if="getSkill('cosmicRecollection').visible == true && getSkill('cosmicRecollection').unlocked == false" :task="getSkill('cosmicRecollection')">
-                                <Requirement :req="getSkill('cosmicRecollection').reqs[0]" :task="getSkill('nova')" />
+                                <Requirement :req="getSkill('cosmicRecollection').reqs[0]" :task="getJob('nova')" />
                                 <Requirement :req="getSkill('cosmicRecollection').reqs[1]" :task="getSkill('meditation')" />
                                 <Requirement :req="getSkill('cosmicRecollection').reqs[2]" :task="getSkill('mindSeize')" />
                             </TaskLocked>
                             <SkillUnlocked v-if="getSkill('cosmicRecollection').unlocked == true" bg="listbg4" :skill="getSkill('cosmicRecollection')" :effectId="'maxLevel'" :gain="getTaskGain(getSkill('cosmicRecollection'))" :isActive="isSkillActive('cosmicRecollection')" @activate="setCurrentSkill('cosmicRecollection')" />
                             
                             <TaskLocked v-if="getSkill('essenceCollector').visible == true && getSkill('essenceCollector').unlocked == false" :task="getSkill('essenceCollector')">
-                                <Requirement :req="getSkill('essenceCollector').reqs[0]" :task="getSkill('sigmaProioxis')" />
+                                <Requirement :req="getSkill('essenceCollector').reqs[0]" :task="getJob('sigmaProioxis')" />
                                 <Requirement :req="getSkill('essenceCollector').reqs[1]" :task="getSkill('absoluteWish')" />
                                 <Requirement :req="getSkill('essenceCollector').reqs[2]" :task="getSkill('darkKnowledge')" />
                             </TaskLocked>
@@ -775,7 +813,7 @@
                             <SkillUnlocked v-if="getSkill('galacticCommand').unlocked == true" bg="listbg4" :skill="getSkill('galacticCommand')" :effectId="'allExpenses'" :gain="getTaskGain(getSkill('galacticCommand'))" :isActive="isSkillActive('galacticCommand')" @activate="setCurrentSkill('galacticCommand')" />
 	                            
                             <TaskLocked v-if="getSkill('omnipotence').visible == true && getSkill('omnipotence').unlocked == false" :task="getSkill('omnipotence')">
-                                <Requirement :req="getSkill('omnipotence').reqs[0]" :task="getSkill('oneAboveAll')" />
+                                <Requirement :req="getSkill('omnipotence').reqs[0]" :task="getJob('oneAboveAll')" />
                                 <Requirement :req="getSkill('omnipotence').reqs[1]" :task="getSkill('higherDimensions')" />
                             </TaskLocked>
                             <SkillUnlocked v-if="getSkill('omnipotence').unlocked == true" bg="listbg4" :skill="getSkill('omnipotence')" :effectId="'allSpeed'" :gain="getTaskGain(getSkill('omnipotence'))" :isActive="isSkillActive('omnipotence')" @activate="setCurrentSkill('omnipotence')" />
@@ -834,12 +872,12 @@
                             <SkillUnlocked v-if="getSkill('parallelUniverse').unlocked == true" bg="listbg2" :skill="getSkill('parallelUniverse')" :effectId="'allSpeed'" :gain="getTaskGain(getSkill('parallelUniverse'))" :isActive="isSkillActive('parallelUniverse')" @activate="setCurrentSkill('parallelUniverse')" />
                             
                             <TaskLocked v-if="getSkill('higherDimensions').visible == true && getSkill('higherDimensions').unlocked == false" :task="getSkill('higherDimensions')">
-                                <EvilRequirement :req="10e3" :evils="evils" />
+                                <EssenceRequirement :req="10e3" :essences="essences" />
                             </TaskLocked>
                             <SkillUnlocked v-if="getSkill('higherDimensions').unlocked == true" bg="listbg2" :skill="getSkill('higherDimensions')" :effectId="'lifespan'" :gain="getTaskGain(getSkill('higherDimensions'))" :isActive="isSkillActive('higherDimensions')" @activate="setCurrentSkill('higherDimensions')" />
                             
                             <TaskLocked v-if="getSkill('epiphany').visible == true && getSkill('epiphany').unlocked == false" :task="getSkill('epiphany')">
-                                <EvilRequirement :req="30e3" :evils="evils" />
+                                <EssenceRequirement :req="30e3" :essences="essences" />
                             </TaskLocked>
                             <SkillUnlocked v-if="getSkill('epiphany').unlocked == true" bg="listbg2" :skill="getSkill('epiphany')" :effectId="'councilSpeed'" :gain="getTaskGain(getSkill('epiphany'))" :isActive="isSkillActive('epiphany')" @activate="setCurrentSkill('epiphany')" />
                             
@@ -964,95 +1002,103 @@
                     <div v-if="currentPage == 'rebirth'" class="pt-4">
                         <div class="row g-2">
                         
-                            <div v-if="years > 25" class="col-9 mt-0">
+                            <div v-if="years >= 25" class="col-9 mt-0">
                                 <div class="bg-card px-3 py-2 text-white text-shadow small">
-                                    You stumble across a strange looking amulet on your 25th birthday. It does not look like
-                                    it has any worth on the market given that it's made from cheap-looking copper. However, you
-                                    feel a weird urge to keep the amulet, so you slip it into your pocket for safekeeping.
+                                   {{ $t('content_rebirth_25') }}
                                 </div>
                             </div>
                             
-                            <div v-if="years > 45" class="ms-auto col-9">
+                            <div v-if="years >= 45" class="ms-auto col-9">
                                 <div class="bg-card px-3 py-2 text-white text-shadow small">
-                                    On your 45th birthday, you feel the amulet shiver uncontrollably in your pocket. You take it
-                                    out and the constant shivering suddenly stops. More to your bizarre surprise, you notice
-                                    a strange etching on the centre of the amulet.
+                                    {{ $t('content_rebirth_45') }}
                                 </div>
                             </div>
                         
-                            <div v-if="years > 65" class="col-9">
+                            <div v-if="years >= 65" class="col-9">
                                 <div class="bg-card px-3 py-2 text-white text-shadow small">
                                     <div class="p-1">
-                                        On your 65th birthday, you once again encounter the strange, unexplained shivering from your
-                                        amulet. But this time, a living eyeball emerges from the centre. Although terribly frightened,
-                                        you realise you do not have many years to live left anyway so you consider touching the eye
-                                        to see what happens.
+                                       {{ $t('content_rebirth_65_1') }}
                                     </div>
                                     <div class="p-1">
-                                        By touching the eyeball, you will be reborn and have to restart life again, losing all your levels and coins.
-                                        However, you will gain <b class="text-white">bonus</b> for your jobs and skills equivalent to: <b class="text-white">1 + the max level of the job or skill / 10.</b>
-                                        This means you will learn everything again much more quickly than you did in your previous life.
+										<i18n path="content_rebirth_65_2" tag="span">
+											<b class="text-white">{{ $t('content_rebirth_65_2_1') }}</b>
+											<b class="text-white">{{ $t('content_rebirth_65_2_2') }}</b>
+										</i18n>
                                     </div>
                                     <div class="p-1 text-danger">
-                                        Something tells you that the amulet might evolve after living for <b>2 whole centuries</b> and transform even further after living for
-                                        a <b>millennium</b> and reach its final form after <b>ten millenia</b>...
+                                        <i18n path="content_rebirth_65_3" tag="span">
+											<b>{{ $t('content_rebirth_65_3_1') }}</b>
+											<b>{{ $t('content_rebirth_65_3_2') }}</b>
+											<b>{{ $t('content_rebirth_65_3_3') }}</b>
+										</i18n>
                                     </div>
                                     <div class="p-1">
-                                        <button type="button" class="btn btn-normal" @click="rebirthOne()">Touch the eye</button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div v-if="years > 200" class="ms-auto col-9">
-                                <div class="bg-card px-3 py-2 text-white text-shadow small">
-                                    <div class="p-1">
-                                        Your gut instinct was right. The moment you hit the grand age of 200, you hear an ominous hum coming from the amulet.
-                                        A mouth emerges from its surface and begins to cackle, and proceeds to say: "So you've made it this far... Are you ready to embrace evil?"
-                                    </div>
-                                    <div class="p-1">
-                                        If you decide to embrace <span class="text-evil fw-bold">evil</span>, all of your levels, coins and even max levels will be reset.
-                                        You will be reborn as a fresh slate. However, you will unlock a new line of skills and gain
-                                        <b class="text-evil"><FormatNumber :value="evilGain" /> evil</b>, and which will heavily impact your future lives.
-                                    </div>
-                                    <div class="p-1">
-                                        <button type="button" class="btn btn-normal" @click="rebirthTwo()">Embrace evil</button>
+                                        <button type="button" class="btn btn-normal" @click="rebirthOne()">{{ $t('name_rebirth1') }}</button>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div v-if="years > 1000" class="col-9">
+                            <div v-if="years >= 200" class="ms-auto col-9">
                                 <div class="bg-card px-3 py-2 text-white text-shadow small">
                                     <div class="p-1">
-                                        A thousand years have come and gone and yet, you still remain alive... somehow. You feel your amulet shivering again and to your surprise, you see small tendrils
-                                        full of eyeballs emergin from it. As you are about to drop the amulet, you hear frightening screech followed by whispers in your head... <b class="text-void">You have to embrace the Void...</b> 
+                                       {{ $t('content_rebirth_200_1') }}
                                     </div>
                                     <div class="p-1">
-                                        You have unlocked <b class="text-void">The Void</b> class category along with <b class="text-void">Void Manipulation</b> abilities.
+										<i18n path="content_rebirth_200_2" tag="span">
+											<span class="text-evil fw-bold">{{ $t('content_rebirth_200_2_1') }}</span>
+											<b class="text-evil"><FormatNumber :value="evilGain" />{{ $t('content_rebirth_200_2_2') }}</b>
+										</i18n>
+                                    </div>
+                                    <div class="p-1">
+                                        <button type="button" class="btn btn-normal" @click="rebirthTwo()">{{ $t('name_rebirth2') }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div v-if="years >= 1000" class="col-9">
+                                <div class="bg-card px-3 py-2 text-white text-shadow small">
+                                    <div class="p-1">
+										<i18n path="content_rebirth_1000_1" tag="span">
+											<b class="text-void">{{ $t('content_rebirth_1000_1_1') }}</b>
+										</i18n>
+                                    </div>
+                                    <div class="p-1">
+										<i18n path="content_rebirth_1000_2" tag="span">
+											<b class="text-void">{{ $t('content_rebirth_1000_2_1') }}</b>
+											<b class="text-void">{{ $t('content_rebirth_1000_2_2') }}</b>
+										</i18n>
                                     </div>
                                 </div>
                             </div>
                         
-                            <div v-if="years > 10000" class="ms-auto col-9">
+                            <div v-if="years >= 10000" class="ms-auto col-9">
                                 <div class="bg-card px-3 py-2 text-white text-shadow small">
                                     <div class="p-1">
-                                        Ten millenia have passed... most of them spent serving the Void, yet there is still a glimpse of humanity inside of you. All of the sudden your amulet starts to glow in the distance,
-                                        illuminating darkness around you with the brightness of thousand suns. With the very last remnant of your free will you run to your amulet and touch it...
-                                        <b class="text-white">You are now part of something bigger than yourself...</b>
+										<i18n path="content_rebirth_10000_1" tag="span">
+											<b class="text-white">{{ $t('content_rebirth_10000_1_1') }}</b>
+										</i18n>
                                     </div>
                                     <div class="p-1">
-                                        You have unlocked <b style="color:#d5c010">Galactic Council</b> class category along with <b style="color:#d5c010">Celestial Powers</b> abilities.
+                                        <i18n path="content_rebirth_10000_2" tag="span">
+											<b class="text-void">{{ $t('content_rebirth_10000_2_1') }}</b>
+											<b class="text-void">{{ $t('content_rebirth_10000_2_2') }}</b>
+										</i18n>
                                     </div>
                                     <div class="p-1">
-                                        By clicking on <b style="color:#18d2d9">Transcend</b>, you will be reborn once again, losing all your coins, <b class="text-evil">evil</b> and current levels.
-                                        However your max level won't be erased but multiplied with <b style="color:#d5c010">Cosmic Recollection</b> ability and you will gain
-                                        <b class="text-essence"><FormatNumber :value="essenceGain" /> essence</b>,
-                                        new ability that will boost you even further in your journey.
+										<i18n path="content_rebirth_10000_3" tag="span">
+											<b style="color:#18d2d9">{{ $t('content_rebirth_10000_3_1') }}</b>
+											<b class="text-evil">{{ $t('content_rebirth_10000_3_2') }}</b>
+											<b style="color:#d5c010">{{ $t('content_rebirth_10000_3_3') }}</b>
+											<b class="text-essence"><FormatNumber :value="essenceGain" />{{ $t('content_rebirth_10000_3_4') }}</b>
+										</i18n>
                                     </div>
                                     <div class="p-1 text-danger">
-                                        Transced will only show up if you have <b>Cosmic Recollection</b> ability unlocked!
+										<i18n path="content_rebirth_10000_4" tag="span">
+											<b>{{ $t('content_rebirth_10000_4_1') }}</b>
+										</i18n>
                                     </div>
                                     <div v-if="getSkill('cosmicRecollection').level >= 1" class="p-1">
-                                        <button type="button" class="btn btn-normal" @click="rebirthThree()">Transcend</button>
+                                        <button type="button" class="btn btn-normal" @click="rebirthThree()">{{ $t('name_rebirth3') }}</button>
                                     </div>
                                 </div>
                             </div>
@@ -1088,6 +1134,34 @@
                             </div>
                         </div>
                         
+                        <div class="container">
+                            <div class="row mt-2">
+                                <div class="col-12">
+                                    <span class="h5 text-light text-shadow">{{ $t('settings_language') }}</span>
+                                </div>
+                                <div class="col-12 p-0">
+                                    <div class="row p-0 mt-1 align-items-center">
+                                    	<select class="form-control" v-model="language">
+											<option value="en">{{ $t('settings_language_en')}}</option>
+											<option value="cn">{{ $t('settings_language_cn')}}</option>
+										</select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container">
+                            <div class="row mt-2">
+                                <div class="col-12">
+									<button type="button" class="btn p-0 border-0" @click="toggleOfflineGain()">
+										<img src="~/assets/ui/toggleOff.png" width="16px" :class="{ 'd-none':offlineGainEnabled == true }" />
+										<img src="~/assets/ui/toggleOn.png" width="16px" :class="{ 'd-none':offlineGainEnabled == false }" />
+									</button>
+                                    <span class="h5 text-light text-shadow">{{ $t('settings_en_offline') }}</span>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="container">
                             <div class="row mt-2">
                                 <div class="col-12">
@@ -1172,6 +1246,8 @@
                                 <AchievementRow text="achRow_features">
                                     <Achievement :achievement="getAchievement('autoJob')" />
                                     <Achievement :achievement="getAchievement('autoSkill')" />
+                                    <Achievement :achievement="getAchievement('autoJobCat')" />
+                                    <Achievement :achievement="getAchievement('autoShop')" />
                                     <Achievement :achievement="getAchievement('autoPause')" />
                                 </AchievementRow>
                                 <AchievementRow text="achRow_properties">
@@ -1310,7 +1386,32 @@ class Task extends Base {
         
         this.visible = false
         this.gainMods = []
+
+		this.excluded = false
+		this._excludeLevel = -1;
     }
+
+	get excludeLevel() {
+		if (isNaN(this._excludeLevel) || this._excludeLevel < 0) {
+			if (this instanceof Job) {
+				return 'word_no_set';
+			} else {
+				return 'word_no_limit';
+			}
+		} else {
+			return this._excludeLevel;
+		}
+	}
+	set excludeLevel(val) {
+		val = +val;
+		if (isNaN(val) || val < 0) {
+			this._excludeLevel = -1;
+
+			this.excluded = false;
+		} else {
+			this._excludeLevel = val;
+		}
+	}
     
     getGain() {
     
@@ -1321,6 +1422,11 @@ class Task extends Base {
         
         let ret = Math.round(10 * mult)
         return ret
+    }
+
+	getIncomeMultiplier() {
+		var levelMultiplier = 1 + Math.log10(this.level + 1)
+		return levelMultiplier
     }
     
     getMax() {
@@ -1406,6 +1512,9 @@ class Job extends Task {
     getIncome() {
     
         let mult = 1
+
+		mult = this.getIncomeMultiplier();
+
         this.incomeMods.forEach(mod => { mult *= mod.getEffect() })
         
         let ret = Math.round(this.income * mult)
@@ -1473,7 +1582,6 @@ class Skill extends Task {
         this.essenceReq = data.essenceReq
         
         this.max = 100
-        this.excluded = false
     }
     
     getEffect() {
@@ -1645,7 +1753,9 @@ var achievementData = [
 
     { id:'autoJob',   type:'features', level:1, check:function(state) { return state.years >= 20 || state.rebirthOneCount >= 1 }, },
     { id:'autoSkill', type:'features', level:2, check:function(state) { return state.years >= 20 || state.rebirthOneCount >= 1 }, },
-    { id:'autoPause', type:'features', level:3, check:function(state) { return state.getJob('corrupted').unlocked || state.rebirthThreeCount > 0 }, },
+    { id:'autoJobCat',type:'features', level:3, check:function(state) { return state.years >= 20 || state.rebirthOneCount >= 1 }, },
+    { id:'autoShop',  type:'features', level:4, check:function(state) { return state.years >= 20 || state.rebirthOneCount >= 1 }, },
+    { id:'autoPause', type:'features', level:5, check:function(state) { return state.getJob('corrupted').unlocked || state.rebirthThreeCount > 0 }, },
 
     { id:'achTent',              type:'properties', level:1, check:function(state) { return state.getItem('tent').unlocked },              },
     { id:'achHouse',             type:'properties', level:2, check:function(state) { return state.getItem('house').unlocked },             },
@@ -1667,7 +1777,7 @@ var achievementData = [
     { id:'hoarder1', type:'hoarder', level:1, check:function(state) { return state.activeArtefactCount >= 5 },  },
     { id:'hoarder2', type:'hoarder', level:2, check:function(state) { return state.activeArtefactCount >= 10 }, apply:function(state) { state.achHappiness += .1 }, },
     { id:'hoarder3', type:'hoarder', level:3, check:function(state) { return state.activeArtefactCount >= 14 }, apply:function(state) { state.achHappiness += .15 }, },
-    { id:'hoarder4', type:'hoarder', level:4, check:function(state) { return state.activeArtefactCount >= 20 }, apply:function(state) { state.achHappiness += .25 }, },
+    { id:'hoarder4', type:'hoarder', level:4, check:function(state) { return state.activeArtefactCount >= 18 }, apply:function(state) { state.achHappiness += .25 }, },
 
     { id:'rebirth11', type:'rebirth1', level:1, check:function(state) { return state.rebirthOneCount >= 1  }, },
     { id:'rebirth12', type:'rebirth1', level:2, check:function(state) { return state.rebirthOneCount >= 5  }, },
@@ -1741,9 +1851,12 @@ export default {
             
             paused:false,
             autoJobEnabled:false,
+            autoJobCatEnabled:false,
             autoSkillEnabled:false,
             autoPauseEnabled:false,
+            autoShopEnabled:false,
             timeWarpingEnabled:false,
+            offlineGainEnabled:true,
             
             currentJob:null,
             currentSkill:null,
@@ -1789,7 +1902,7 @@ export default {
             let higherDimensions = this.getSkill('higherDimensions')
             
             let ret = (365 * 70) * lifeEssence.getEffect() * astralBody.getEffect() * ceaselessAbyss.getEffect() * cosmicLongevity.getEffect() * higherDimensions.getEffect() * this.achLifespan
-            return ret
+            return ret;
         },
         
         isAlive: function() {
@@ -1804,7 +1917,7 @@ export default {
             let timeWarping = this.getSkill('timeWarping')
             let temporalDimension = this.getSkill('temporalDimension')
             
-            let ret = timeWarping.getEffect() + temporalDimension.getEffect() * timeLoop.getEffect()
+            let ret = timeWarping.getEffect() * temporalDimension.getEffect() * timeLoop.getEffect();
             return ret
         },
             
@@ -1814,7 +1927,7 @@ export default {
             let timeWarping = this.getSkill('timeWarping')
             let temporalDimension = this.getSkill('temporalDimension')
                         
-            let timeWarpingSpeed = this.timeWarpingEnabled ? timeWarping.getEffect() + temporalDimension.getEffect() * timeLoop.getEffect() : 1
+            let timeWarpingSpeed = this.timeWarpingEnabled ? timeWarping.getEffect() * temporalDimension.getEffect() * timeLoop.getEffect() : 1
             
             let ret = 4 * +!this.paused * +this.isAlive * timeWarpingSpeed * this.achGameSpeed
             return ret
@@ -1829,7 +1942,7 @@ export default {
             let multiverseFragment = this.getArtefact('multiverseFragment')
             
             let ret = meditation.getEffect() * butler.getEffect() / mindSeize.getEffect() * multiverseFragment.getEffect() * this.currentProperty.getEffect() * this.achHappiness
-            return ret
+            return ret;
         },
         
         totalIncome: function() {
@@ -1878,12 +1991,23 @@ export default {
             this.artefacts.forEach(artefact => { if (artefact.activated == true) ret += 1 })
             return ret
         },
+
+		language: {
+			get: function() {
+				return this.$i18n.locale;
+			},
+			set: function(val) {
+				this.$i18n.locale = val;
+
+				localStorage.setItem(this.localStorageName + "_language", this.language)
+			},
+		},
     },
     
     methods: {
     
         init() {
-        
+
             jobData.forEach(data => {
                 
                 let job = new Job(data)
@@ -2032,8 +2156,8 @@ export default {
                 if (!text) return console.warn('Load failed')
                 loadeddata = JSON.parse(text)
                 
-                this.locale = loadeddata.locale || this.locale
-                // this.lastUpdateTimeMs = loadeddata.lastUpdateTimeMs || this.lastUpdateTimeMs
+                // this.locale = loadeddata.locale || this.locale
+                if (this.offlineGainEnabled) this.lastUpdateTimeMs = loadeddata.lastUpdateTimeMs || this.lastUpdateTimeMs
                 
                 this.currentPage = loadeddata.currentPage || this.currentPage
                 
@@ -2046,8 +2170,10 @@ export default {
                 
                 this.paused = loadeddata.paused || this.paused
                 this.autoJobEnabled = loadeddata.autoJobEnabled || this.autoJobEnabled
+                this.autoJobCatEnabled = loadeddata.autoJobCatEnabled || this.autoJobCatEnabled
                 this.autoSkillEnabled = loadeddata.autoSkillEnabled || this.autoSkillEnabled
                 this.autoPauseEnabled = loadeddata.autoPauseEnabled || this.autoPauseEnabled
+                this.autoShopEnabled = loadeddata.autoShopEnabled || this.autoShopEnabled
                 this.timeWarpingEnabled = loadeddata.timeWarpingEnabled || this.timeWarpingEnabled
                 
                 this.rebirthOneCount = loadeddata.rebirthOneCount || this.rebirthOneCount
@@ -2074,6 +2200,7 @@ export default {
                         job.level = data.level || 0
                         job.current = data.current || 0
                         job.bonusLevel = data.bonusLevel || 0
+						job.excludeLevel = data.excludeLevel === undefined ? -1 : data.excludeLevel
                     }
                 })
                 
@@ -2085,6 +2212,7 @@ export default {
                         skill.level = data.level || 0
                         skill.current = data.current || 0
                         skill.excluded = data.excluded || false
+                        skill.excludeLevel = data.excludeLevel === undefined ? -1 : data.excludeLevel
                         skill.bonusLevel = data.bonusLevel || 0
                     }
                 })
@@ -2148,8 +2276,10 @@ export default {
                 
                 paused:this.paused,
                 autoJobEnabled:this.autoJobEnabled,
+                autoJobCatEnabled:this.autoJobCatEnabled,
                 autoSkillEnabled:this.autoSkillEnabled,
                 autoPauseEnabled:this.autoPauseEnabled,
+                autoShopEnabled:this.autoShopEnabled,
                 timeWarpingEnabled:this.timeWarpingEnabled,
                 
                 rebirthOneCount:this.rebirthOneCount,
@@ -2176,6 +2306,7 @@ export default {
                     level:job.level,
                     current:job.current,
                     bonusLevel:job.bonusLevel,
+                    excludeLevel:job.excludeLevel,
                 }
                 
                 saveddata.jobs.push(temp)
@@ -2188,6 +2319,7 @@ export default {
                     level:skill.level,
                     current:skill.current,
                     excluded:skill.excluded,
+                    excludeLevel:skill.excludeLevel,
                     bonusLevel:skill.bonusLevel,
                 }
                 
@@ -2261,28 +2393,71 @@ export default {
             let tickTimeMs = 1000 / this.fps
             let tickCount = Math.min(Math.floor(updateDeltaMs / tickTimeMs), this.fps * 1800)
             
+			let tickCountMax = 100
+			let tickMuti = 1;
+			if (tickCount > tickCountMax) {
+				tickMuti = Math.round(tickCount / tickCountMax);
+				tickCount = tickCountMax;
+			}
             for (let i = 0; i < tickCount; i++) {
-            
-                let gainDays = this.gameSpeed / this.fps
+                let gainDays = this.gameSpeed / this.fps * tickMuti;
                 this.days += gainDays
                 
                 if ((this.days - gainDays) < (this.pauseDelay * 365) && this.days > (this.pauseDelay * 365) && this.autoPauseEnabled == true) this.paused = true
 
                 if (this.autoJobEnabled) {
-                
-                    let index = this.jobs.findIndex(job => job.id == this.currentJob.id)                    
-                    let tempItem = this.jobs[index + 1]
-                    if (tempItem.cat == this.currentJob.cat && tempItem.unlocked == true) this.currentJob = tempItem
+					let targetLeveljob = this.jobs.filter(job => job.unlocked == true && (this.autoJobCatEnabled || job.cat == this.currentJob.cat)).find(job => job._excludeLevel >= 0 && job.level < job._excludeLevel);
+					if (targetLeveljob) {
+						this.currentJob = targetLeveljob;
+					} else {
+						let jobs = this.jobs.filter(job => job.unlocked == true && (this.autoJobCatEnabled || job.cat == this.currentJob.cat)).reverse();
+						if (jobs[0] && jobs[0].id != this.currentJob.id) this.currentJob = jobs[0];
+
+						// let index = this.jobs.findIndex(job => job.id == this.currentJob.id)                    
+						// let tempItem = this.jobs[index + 1]
+						// if (tempItem && tempItem.cat == this.currentJob.cat && tempItem.unlocked == true) this.currentJob = tempItem;
+					}
                 }
                 
                 if (this.autoSkillEnabled) {
+					this.skills.forEach(skill => {
+						if (skill._excludeLevel >= 0) {
+							if (skill.level >= skill._excludeLevel) {
+								skill.excluded = true;
+							} else {
+								skill.excluded = false;
+							}
+						}
+					});
                 
                     let skills = this.skills.filter(skill => skill.unlocked == true && skill.excluded == false)
                     skills.sort((sk1, sk2) => { return (sk1.getMax() / this.getTaskGain(sk1)) - (sk2.getMax() / this.getTaskGain(sk2)) })
-                    if (skills[0].id != this.currentSkill.id) this.currentSkill = skills[0]
+                    if (skills[0] && skills[0].id != this.currentSkill.id) this.currentSkill = skills[0]
                 }
 
-                let gainJob = this.getTaskGain(this.currentJob)
+                if (this.autoShopEnabled) {
+					let realNet = this.totalIncome;
+					let properties = this.properties.filter(property => property.unlocked && this.totalIncome - property.getExpense() >= 0).reverse();
+					if (properties[0] && properties[0].id != this.currentProperty.id) this.setCurrentProperty(properties[0].id);
+					if (properties[0]) {
+						realNet -= properties[0].getExpense();
+					}
+
+					this.artefacts.forEach(artefact => {
+						if (artefact.unlocked && realNet - artefact.getExpense() >= 0) {
+							if (!artefact.activated) {
+								artefact.activated = true;
+							}
+							realNet -= artefact.getExpense();
+						} else {
+							if (artefact.activated) {
+								artefact.activated = false;
+							}
+						}
+					})
+                }
+
+                let gainJob = this.getTaskGain(this.currentJob) * tickMuti;
                 this.currentJob.progress(gainJob * this.gameSpeed / this.fps)
                 
                 let gainCoins = this.net * gainDays
@@ -2296,7 +2471,7 @@ export default {
                     this.artefacts.forEach(artefact => { artefact.activated = false })
                 }
                 
-                let gainSkill = this.getTaskGain(this.currentSkill)
+                let gainSkill = this.getTaskGain(this.currentSkill) * tickMuti;
                 this.currentSkill.progress(gainSkill * this.gameSpeed / this.fps)
                 
                 this.jobs.forEach(job => { if (job.unlocked == false) job.unlocked = this.isUnlocked(job) })
@@ -2390,11 +2565,10 @@ export default {
         isSkillActive(skillId) { return skillId == this.currentSkill.id },
         
         isUnlocked(item) {
-            
-            if (item.coinReq > 0) return item.coinReq >= this.coins ? false : true
-            if (item.evilReq > 0) return item.evilReq >= this.evils ? false : true
-            if (item.yearReq > 0) return item.yearReq >= this.years ? false : true
-            if (item.essenceReq > 0) return item.essenceReq >= this.essences ? false : true
+            if (item.coinReq > 0) return item.coinReq > this.coins ? false : true
+            if (item.evilReq > 0) return item.evilReq > this.evils ? false : true
+            if (item.yearReq > 0) return item.yearReq > this.years ? false : true
+            if (item.essenceReq > 0) return item.essenceReq > this.essences ? false : true
             
             let ret = true
             if (item.reqs) {
@@ -2410,10 +2584,10 @@ export default {
         
         isVisible(item) {
             
-            if (item.coinReq > 0) return item.coinReq >= this.coins ? false : true
-            if (item.evilReq > 0) return item.evilReq >= this.evils ? false : true
-            if (item.yearReq > 0) return item.yearReq >= this.years ? false : true
-            if (item.essenceReq > 0) return item.essenceReq >= this.essences ? false : true
+            // if (item.coinReq > 0) return item.coinReq > this.coins ? false : true
+            // if (item.evilReq > 0) return item.evilReq > this.evils ? false : true
+            // if (item.yearReq > 0) return item.yearReq > this.years ? false : true
+            // if (item.essenceReq > 0) return item.essenceReq > this.essences ? false : true
             
             let ret = true
             if (item.reqs) {
@@ -2423,6 +2597,20 @@ export default {
                     if (reqItem.unlocked == false) ret = false
                 })
             }
+
+			if (item.evilReq > 0 || item.essenceReq > 0) {
+				if (item instanceof Job) {
+					let firstLocked = this.jobs.find(job => job.cat === item.cat && job.unlocked === false);
+					if (firstLocked !== item) {
+						ret = false
+					}
+				} else if (item instanceof Skill) {
+					let firstLocked = this.skills.find(skill => skill.cat === item.cat && skill.unlocked === false);
+					if (firstLocked !== item) {
+						ret = false
+					}
+				}
+			}
             
             return ret
         },
@@ -2461,9 +2649,15 @@ export default {
         
         toggleAutoJob() { this.autoJobEnabled = !this.autoJobEnabled },
 
+        toggleAutoJobCat() { this.autoJobCatEnabled = !this.autoJobCatEnabled },
+
         toggleAutoSkill() { this.autoSkillEnabled = !this.autoSkillEnabled },
 
         toggleAutoPause() { this.autoPauseEnabled = !this.autoPauseEnabled },
+
+        toggleAutoShop() { this.autoShopEnabled = !this.autoShopEnabled },
+
+        toggleOfflineGain() { this.offlineGainEnabled = !this.offlineGainEnabled; localStorage.setItem(this.localStorageName + "_offlineGainEnabled", this.offlineGainEnabled) },
 
         //-----
         
@@ -2658,7 +2852,7 @@ export default {
         
         resetGameData() {
         
-            localStorage.removeItem('fgpk')
+            localStorage.removeItem(this.localStorageName)
             
             window.location.reload()
         },
@@ -2673,15 +2867,22 @@ export default {
         
         window.addEventListener('keypress', (e) => {
             
-            if (e.code == 'Space') this.toggleAutoPause()
+            if (e.code == 'Space') this.togglePause()
             else if (e.code == 'KeyP') this.toggleAutoJob()
             else if (e.code == 'KeyS') this.toggleAutoSkill()
             else if (e.code == 'KeyW') this.toggleTimeWarping()
         }) 
         
-        setTimeout(() => { this.start() }, this.minLoadingTimerMS)
+		this.language = localStorage.getItem(this.localStorageName + "_language") || "cn";
+		this.offlineGainEnabled = (localStorage.getItem(this.localStorageName + "_offlineGainEnabled") || "true") !== "false";
+        setTimeout(() => {
+			this.start();
+		}, this.minLoadingTimerMS)
     },
     
+    mounted() {
+        window.game = this;
+    },
     beforeUnmount() {
         
         this.save()

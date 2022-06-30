@@ -9,7 +9,7 @@
         </div>
         <div v-if="ruby != 0 || platinum != 0" class="ps-1 col-auto d-flex align-items-center">
             <span v-if="ruby == 0">{{ platinum.toLocaleString() }}</span>
-            <span v-if="ruby != 0">{{ String(platinum).padStart(5, '0') }}</span>
+            <span v-if="ruby != 0">{{ String(platinum).padStart(4, '0') }}</span>
             <img src="~/assets/ui/platinum.png" width="12px" height="12px" style="margin-top:1px; margin-left:3px;" />
         </div>
         <div v-if="ruby != 0 || platinum != 0 || gold != 0" class="ps-1 col-auto d-flex align-items-center">

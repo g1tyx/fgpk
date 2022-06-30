@@ -1,2 +1,3 @@
 # PK by FG
-Rewriting of Progress Knight (PK) game by Freddec Games (FG)
+fork by FreddecGames/fgpk
+chinese translation from g1tyx
